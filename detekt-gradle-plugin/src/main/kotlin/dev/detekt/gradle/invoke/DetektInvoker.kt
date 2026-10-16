@@ -30,6 +30,7 @@ internal interface DetektInvoker {
 
 internal interface DetektWorkParameters : WorkParameters {
     val arguments: ListProperty<String>
+    // Only the detekt task wires this up; other tasks leave it unset.
     val ignoreFailures: Property<Boolean>
     val dryRun: Property<Boolean>
     val taskName: Property<String>
@@ -44,7 +45,7 @@ internal abstract class DetektWorkAction : WorkAction<DetektWorkParameters> {
                 parameters.arguments.get(),
                 parameters.classpath.files,
                 parameters.taskName.get(),
-                parameters.ignoreFailures.get()
+                parameters.ignoreFailures.getOrElse(false)
             )
             return
         }
@@ -53,7 +54,7 @@ internal abstract class DetektWorkAction : WorkAction<DetektWorkParameters> {
             parameters.arguments.get(),
             parameters.classpath.files,
             parameters.taskName.get(),
-            parameters.ignoreFailures.get()
+            parameters.ignoreFailures.getOrElse(false)
         )
     }
 }

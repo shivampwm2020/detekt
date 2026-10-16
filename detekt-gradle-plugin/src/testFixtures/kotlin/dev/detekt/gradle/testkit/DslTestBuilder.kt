@@ -25,6 +25,7 @@ abstract class DslTestBuilder {
     private var configFile: String? = null
     private var gradleVersion: String? = null
     private var dryRun: Boolean = false
+    private var gradleProperties: Map<String, String> = emptyMap()
     private val customPluginClasspath: MutableList<File> = mutableListOf()
 
     fun withDetektConfig(@Language("gradle.kts") config: String): DslTestBuilder {
@@ -62,6 +63,11 @@ abstract class DslTestBuilder {
         return this
     }
 
+    fun withGradleProperties(properties: Map<String, String>): DslTestBuilder {
+        gradleProperties = properties
+        return this
+    }
+
     fun build(): DslGradleRunner {
         val runner = DslGradleRunner(
             projectLayout = projectLayout,
@@ -71,6 +77,7 @@ abstract class DslTestBuilder {
             baselineFiles = baselineFile?.let { listOf(it) }.orEmpty(),
             gradleVersionOrNone = gradleVersion,
             dryRun = dryRun,
+            gradleProperties = gradleProperties,
             customPluginClasspath = customPluginClasspath,
         )
         runner.setupProject()

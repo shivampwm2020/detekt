@@ -57,4 +57,18 @@ class GenerateConfigTaskSpec {
             assertThat(projectFile("config/correctpath/detekt.yml")).exists()
         }
     }
+
+    @Test
+    fun `can generated config with worker API enabled`() {
+        val builder = DslTestBuilder.kotlin()
+        val gradleRunner = builder
+            .withConfigFile("config/detekt/detekt.yml")
+            .withGradleProperties(mapOf("detekt.use.worker.api" to "true"))
+            .build()
+
+        gradleRunner.runTasksAndCheckResult("detektGenerateConfig") { result ->
+            assertThat(result.task(":detektGenerateConfig")?.outcome).isEqualTo(TaskOutcome.SUCCESS)
+            assertThat(projectFile("config/detekt/detekt.yml")).exists()
+        }
+    }
 }
